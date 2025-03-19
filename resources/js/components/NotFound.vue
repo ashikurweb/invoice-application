@@ -1,23 +1,32 @@
 <template>
-    <div class="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 via-purple-600 to-pink-500">
-      <div class="text-center p-8 bg-white rounded-lg shadow-lg max-w-lg w-full">
-        <h1 class="text-6xl font-bold text-gray-800 mb-4">404</h1>
-        <p class="text-2xl text-gray-600 mb-4">Oops! The page you're looking for doesn't exist.</p>
-        <p class="text-lg text-gray-500 mb-8">It seems like you've lost your way. Try going back to the homepage or use the navigation above.</p>
-        <router-link to="/" class="bg-blue-500 text-white px-6 py-3 rounded-lg shadow-md hover:bg-blue-600 transition ease-in-out duration-300">
-          Go to Homepage
-        </router-link>
-      </div>
+    <div class="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+      <transition name="fade" mode="out-in">
+        <div class="text-center">
+          <h1 class="text-9xl font-bold text-gray-800">404</h1>
+          <p class="text-2xl text-gray-600 mt-4">Oops! Page not found.</p>
+          <p class="text-lg text-gray-500 mt-2">The page you are looking for might have been removed or is temporarily unavailable.</p>
+          <router-link
+            to="/"
+            class="mt-6 inline-block px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition duration-300"
+          >
+            Go Back Home
+          </router-link>
+        </div>
+      </transition>
     </div>
   </template>
   
   <script>
   export default {
     name: 'NotFound',
-  }
+  };
   </script>
   
   <style scoped>
-  /* You can add additional custom styles here if needed */
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity 0.5s;
+  }
+  .fade-enter, .fade-leave-to {
+    opacity: 0;
+  }
   </style>
-  

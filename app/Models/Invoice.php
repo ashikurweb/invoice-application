@@ -20,4 +20,9 @@ class Invoice extends Model
         'discount',
         'total',
     ];
+
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class);
+    }
 }
