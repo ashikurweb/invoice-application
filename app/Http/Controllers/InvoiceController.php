@@ -7,12 +7,11 @@ use Illuminate\Http\Request;
 
 class InvoiceController extends Controller
 {
-    public function get_all_invoice ()
+    public function get_all_invoice()
     {
-        $invoices = Invoice::with('customer')->orderBy('id', 'DESC')->get();
+        $invoices = Invoice::with('customer')->orderBy('id', 'DESC')->paginate(8);
 
-        return response()->json([
-            'invoices' => $invoices
-        ],200);
+        return response()->json($invoices, 200);
     }
+
 }
