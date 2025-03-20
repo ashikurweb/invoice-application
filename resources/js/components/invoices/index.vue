@@ -1,5 +1,8 @@
 <script setup>
 import {onMounted, ref} from 'vue'
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 let invoices      = ref([]);
 let searchInvoice = ref([]);
@@ -21,6 +24,13 @@ const search = async () => {
     invoices.value = response.data.invoices
 }
 
+const createInvoice = async () => {
+    let form = await axios.get('/api/create_invoice');
+    console.log('Form:', form.data)
+    router.push('/invoice/create');
+}
+
+
 </script>
 
 <template>
@@ -29,7 +39,7 @@ const search = async () => {
         <!-- Header -->
         <div class="flex justify-between items-center border-b border-slate-300 pb-4">
             <h2 class="text-3xl font-bold text-gray-800 uppercase">Invoices</h2>
-            <button class="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-5 py-2 rounded-lg shadow-md transition cursor-pointer">
+            <button @click="createInvoice()" class="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-5 py-2 rounded-lg shadow-md transition cursor-pointer">
                 + New Invoice
             </button>
         </div>
@@ -88,7 +98,14 @@ const search = async () => {
         </div>
 
         <div v-else class="grid grid-cols-6 items-center p-4 border-b border-gray-200">
-            <p>Invoice Not Found</p>
-        </div>
+            <div class="col-span-6 flex flex-col items-center justify-center space-y-2 py-6">
+                <!-- Icon -->
+                <i class="fas fa-file-invoice text-4xl text-gray-400"></i>
+                <!-- Message -->
+                <p class="text-lg text-gray-600 font-semibold">No Invoices Found</p>
+                <!-- Optional Subtext -->
+                <p class="text-sm text-gray-500">Try adjusting your search or filters.</p>
+            </div>
+        </div>  
     </div>
 </template>

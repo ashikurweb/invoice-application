@@ -16,7 +16,6 @@ return new class extends Migration
             $table->id();
             $table->string('number')->unique();
             $table->integer('customer_id')->unsigned();
-            // $table->foreignIdFor(Customer::class)->constrained()->cascadeOnDelete();
             $table->date('date');
             $table->date('due_date');
             $table->string('reference')->nullable();
