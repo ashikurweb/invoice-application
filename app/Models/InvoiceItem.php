@@ -14,6 +14,5 @@ class InvoiceItem extends Model
         'invoice_id',
         'quantity',
         'unit_price',
-        
     ];
 }
