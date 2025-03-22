@@ -110,7 +110,6 @@ class InvoiceController extends Controller
     public function show_invoice ( $id )
     {
         $invoice = Invoice::with(['customer', 'invoice_items.product'])->find($id);
-
         return response()->json([
             'invoice' => $invoice
         ], 200);
@@ -146,19 +145,22 @@ class InvoiceController extends Controller
         $invoice->reference   = $request->reference;
         $invoice->terms_and_conditions = $request->terms_and_conditions;
 
-        
-        $invoice->update($request->all());
+
+        $invoice->save();
         
         $invoice_item = $request->input('invoice_item');
         $invoice->invoice_items()->delete(); 
         
 
         foreach(json_decode($invoice_item) as $item) {
-            $itemData['product_id'] = $item->product_id;
-            $itemData['invoice_id'] = $invoice->id;
-            $itemData['quantity']   = $item->quantity;
-            $itemData['unit_price'] = $item->unit_price;
+            InvoiceItem::create([
+                'product_id' => $item->id,
+                'invoice_id' => $invoice->id,
+                'quantity'   => $item->quantity,
+                'unit_price' => $item->unit_price
+            ]);
         }
+
     }
 
     public function destroy_invoice ( $id )
