@@ -145,13 +145,9 @@ class InvoiceController extends Controller
         $invoice->discount    = $request->discount;
         $invoice->reference   = $request->reference;
         $invoice->terms_and_conditions = $request->terms_and_conditions;
-
         
         $invoice->update($request->all());
-        
         $invoice_item = $request->input('invoice_item');
-        $invoice->invoice_items()->delete(); 
-        
 
         foreach(json_decode($invoice_item) as $item) {
             $itemData['product_id'] = $item->product_id;
@@ -159,6 +155,7 @@ class InvoiceController extends Controller
             $itemData['quantity']   = $item->quantity;
             $itemData['unit_price'] = $item->unit_price;
         }
+        InvoiceItem::create( $itemData );
     }
 
     public function destroy_invoice ( $id )

@@ -51,7 +51,6 @@ const addCart = (item) => {
 
 const deleteInvoiceItem = (id, i) => {
     form.value.invoice_items.splice(i, 1);
-
     if (id != undefined) {
         axios.get(`/api/destroy_invoice_item/${id}`);
     }
