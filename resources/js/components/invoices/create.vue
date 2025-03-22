@@ -4,7 +4,7 @@ import { stringifyQuery } from 'vue-router';
 
 let form            = ref([]);
 let all_customers   = ref([]);
-let customer_id     = ref([]);
+let customer_id     = ref(null);
 let item            = ref([]);
 let list_cart       = ref([]);
 let list_products   = ref([]);
@@ -97,7 +97,7 @@ const onSave = () => {
 
         list_cart.value = [];
 
-        router.push('/invoice');
+        router.push('/invoice/create');
     }
 }
 
