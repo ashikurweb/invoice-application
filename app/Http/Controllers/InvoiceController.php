@@ -36,7 +36,6 @@ class InvoiceController extends Controller
         }
     }
 
-
     public function create_invoice(Request $request)
     {
         $counter = Counter::where('key', 'invoice')->first();

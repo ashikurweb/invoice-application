@@ -20,8 +20,7 @@ class CounterFactory extends Factory
         return [
             'key'       => Str::random(16),
             'prefix'    => 'INV-' . Str::random(8),
-            'value'     => fake()->unique()->randomNumber(6, true),
-
+            'value'     => fake()->randomNumber(6, true),
         ];
     }
 }
