@@ -1,5 +1,6 @@
 <script setup>
 import { onMounted, ref } from "vue";
+import router from "../../router";
 
 let form = ref({ id: "" });
 
@@ -16,13 +17,24 @@ onMounted( async () => {
 
 const getInvoices = async () => {
     let response = await axios.get(`/api/show_invoice/${props.id}`);
-    console.log('Form:', response.data.invoice);
-
+    // console.log('Form:', response.data.invoice);
     form.value = response.data.invoice;
 }
 
 const printInvoice = () => {
     window.print();
+    router.push('/').catch(() => {});
+}
+
+
+const onEdit  = () => {
+    router.push('/invoice/edit/'+props.id);
+}
+
+
+const deleteInvoice = (id) => {
+    axios.get(`/api/destroy_invoice/${id}`);
+    router.push('/');
 }
 
 </script>
@@ -142,6 +154,7 @@ const printInvoice = () => {
                     </li>
                     <li>
                         <button
+                            @click="onEdit(form.id)"
                             class="bg-amber-200 text-amber-600 px-4 py-2 rounded-lg hover:text-white cursor-pointer hover:bg-amber-600 transition-all duration-300 flex items-center space-x-2"
                         >
                             <i class="fas fa-edit"></i>
@@ -150,6 +163,7 @@ const printInvoice = () => {
                     </li>
                     <li>
                         <button
+                            @click="deleteInvoice(form.id)"
                             class="bg-rose-200 text-rose-600 hover:text-white px-4 py-2 rounded-lg hover:bg-rose-600 cursor-pointer transition-all duration-300 flex items-center space-x-2"
                         >
                             <i class="fas fa-trash"></i>
