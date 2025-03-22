@@ -8,14 +8,14 @@ let invoices      = ref([]);
 let searchInvoice = ref([]);
 
 onMounted(() => {
-    getInvoices()
+    getInvoices();
 })
 
 
 const getInvoices = async () => {
     let response = await axios.get('/api/get_all_invoice');
     console.log('response', response.data.invoices);
-    invoices.value = response.data.invoices
+    invoices.value = response.data.invoices;
 };
 
 const search = async () => {
@@ -26,8 +26,12 @@ const search = async () => {
 
 const createInvoice = async () => {
     let form = await axios.get('/api/create_invoice');
-    console.log('Form:', form.data)
+    console.log('Form:', form.data);
     router.push('/invoice/create');
+}
+
+const onShow = async (id) => {
+    router.push('/invoice/show/'+id);
 }
 
 
@@ -84,7 +88,7 @@ const createInvoice = async () => {
 
         <!-- Invoice Item -->
         <div v-for="item in invoices" :key="item.id" v-if="invoices.length > 0" class="grid grid-cols-6 items-center p-4 border-b border-gray-200 hover:bg-gray-100 transition">
-            <a href="#" class="text-blue-500 hover:underline">#{{ item.id }}</a>
+            <a href="#" @click="onShow(item.id)" class="text-blue-500 hover:underline">#{{ item.id }}</a>
             <p class="text-gray-600">{{ item.date }}</p>
             <p class="text-gray-600">{{ item.number }}</p>
             <p v-if="item.customer" class="text-gray-800">
