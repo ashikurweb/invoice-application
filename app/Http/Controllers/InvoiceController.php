@@ -150,6 +150,7 @@ class InvoiceController extends Controller
             'terms_and_conditions' => $request->terms_and_conditions,
         ]);
 
+
         $invoiceItems = json_decode($request->input('invoice_item'), true);
         $existingItemIds = $invoice->invoice_items()->pluck('id')->toArray();
 
@@ -189,6 +190,17 @@ class InvoiceController extends Controller
             ->format('Y-m-d h:i:s A');
         $pdf     = Pdf::loadView('invoices.pdf', compact('invoice'));
         return $pdf->download('invoice-' . $invoice->number . '.pdf');
+    }
+
+    public function downloadReceipt ( $id )
+    {
+        $invoice = Invoice::with(['customer', 'invoice_items.product'])->findOrFail($id);
+        $invoice->created_at_formatted = Carbon::parse($invoice->created_at)
+            ->timezone('Asia/Dhaka')
+            ->format('Y-m-d h:i:s A');
+        $pdf = Pdf::loadView('invoices.receipt', compact('invoice'))
+        ->setPaper([0, 0, 226, 600], 'portrait');   
+        return $pdf->download('receipt-' . $invoice->number . '.pdf');
     }
 
     public function destroy_invoice ( $id )
