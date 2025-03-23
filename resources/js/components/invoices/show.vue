@@ -1,6 +1,8 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import router from "../../router";
+import moment from 'moment-timezone';
+
 
 let form = ref({ id: "" });
 
@@ -35,6 +37,16 @@ const onEdit  = () => {
 const deleteInvoice = (id) => {
     axios.get(`/api/destroy_invoice/${id}`);
     router.push('/');
+}
+
+const formatDate = (dateString) => {
+    return moment(dateString)
+        .tz('Asia/Dhaka')
+        .format("YY-MM-DD HH:mm:ss A");
+}
+
+const downloadPDF = (id) => {
+    window.location.href = `/invoice/pdf/${id}`;
 }
 
 </script>
@@ -89,7 +101,7 @@ const deleteInvoice = (id) => {
                 class="grid grid-cols-5 gap-4 hover:bg-slate-100 p-2 border-b border-slate-300 transition-all duration-300"
             >
                 <p class="text-gray-700">{{ i+1 }}</p>
-                <p class="text-gray-700">{{ item.product.description }}</p>
+                <p class="text-gray-700">{{ item.product.description.slice(0, 20) }}...</p>
                 <p class="text-gray-700">${{ item.unit_price }}</p>
                 <p class="text-gray-700">{{ item.quantity }}</p>
                 <p class="text-gray-700">$ {{ item.unit_price * item.quantity }}</p>
@@ -126,36 +138,40 @@ const deleteInvoice = (id) => {
             </div>
         </div>
 
-        <!-- Footer -->
-        <div class="flex justify-end mt-6">
-            <button
-                class="bg-transparent text-purple-500 border border-purple-500 font-semibold px-6 py-2 rounded-lg hover:bg-purple-600 hover:text-white cursor-pointer transition-all duration-300"
-            >
-                Save
-            </button>
-        </div>
 
         <!-- Invoice Details -->
         <div class="flex justify-between items-center mb-6 p-4 mt-8 rounded-lg">
             <div>
                 <h1 class="text-3xl font-bold text-slate-800">#{{ form.id }}</h1>
-                <p class="text-gray-500 text-sm">{{ form.created_at }}</p>
+                <p class="text-gray-500 text-sm">{{ formatDate(form.created_at) }}</p>
             </div>
             <div>
                 <ul class="flex space-x-4">
                     <li>
                         <button 
                             @click="printInvoice()"
-                            class="bg-lime-200 text-lime-600 hover:text-white cursor-pointer px-4 py-2 rounded-lg hover:bg-lime-600 transition-all duration-300 flex items-center space-x-2"
+                            class="bg-slate-200 text-slate-600 hover:text-white cursor-pointer px-4 py-2 rounded-lg hover:bg-slate-600 transition-all duration-300 flex items-center space-x-2"
                         >
                             <i class="fas fa-print"></i>
                             <span>Print</span>
                         </button>
                     </li>
+
+                    <li>
+                        <button
+                            @click="downloadPDF(form.id)"
+                            class="bg-slate-200 text-slate-600 hover:text-white cursor-pointer px-4 py-2 rounded-lg hover:bg-slate-600 transition-all duration-300 flex items-center space-x-2"
+                        >
+                            <i class="fas fa-download"></i>
+                            <span>Download PDF</span>
+                        </button>
+                    </li>
+
+
                     <li>
                         <button
                             @click="onEdit(form.id)"
-                            class="bg-amber-200 text-amber-600 px-4 py-2 rounded-lg hover:text-white cursor-pointer hover:bg-amber-600 transition-all duration-300 flex items-center space-x-2"
+                            class="bg-slate-200 text-slate-600 px-4 py-2 rounded-lg hover:text-white cursor-pointer hover:bg-slate-600 transition-all duration-300 flex items-center space-x-2"
                         >
                             <i class="fas fa-edit"></i>
                             <span>Edit</span>
@@ -164,7 +180,7 @@ const deleteInvoice = (id) => {
                     <li>
                         <button
                             @click="deleteInvoice(form.id)"
-                            class="bg-rose-200 text-rose-600 hover:text-white px-4 py-2 rounded-lg hover:bg-rose-600 cursor-pointer transition-all duration-300 flex items-center space-x-2"
+                            class="bg-slate-200 text-slate-600 hover:text-white px-4 py-2 rounded-lg hover:bg-slate-600 cursor-pointer transition-all duration-300 flex items-center space-x-2"
                         >
                             <i class="fas fa-trash"></i>
                             <span>Delete</span>

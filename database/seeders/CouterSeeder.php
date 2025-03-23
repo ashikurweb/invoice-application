@@ -14,6 +14,6 @@ class CouterSeeder extends Seeder
      */
     public function run(): void
     {
-        Counter::factory(10)->create();
+        Counter::factory(5)->create();
     }
 }
