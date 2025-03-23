@@ -92,14 +92,10 @@ const Total = () => {
     }
 }
 
-const onUpdate = (id) => {
+const onUpdate = async (id) => {
     if (form.value.invoice_items.length >= 1) {
-        // alert(JSON.stringify(form.value.invoice_items));
-        let subtotal = 0;
-        subtotal = SubTotal();
-
-        let total = 0;
-        total = Total();
+        let subtotal = SubTotal();
+        let total = Total();
 
         const formData = new FormData();
         formData.append('invoice_item', JSON.stringify(form.value.invoice_items));
@@ -113,13 +109,17 @@ const onUpdate = (id) => {
         formData.append('subtotal', subtotal);
         formData.append('total', total);
 
-        axios.post(`/api/update_invoice/${form.value.id}`, formData);
-
-        form.value.invoice_items = [];
-
-        router.push('/');
+        try {
+            const response = await axios.post(`/api/update_invoice/${form.value.id}`, formData);
+            console.log(response.data.message); 
+            form.value.invoice_items = [];
+            router.push('/'); 
+        } catch (error) {
+            console.error('Error updating invoice:', error);
+            alert('Failed to update the invoice. Please try again.');
+        }
     }
-}
+};
 
 </script>
 

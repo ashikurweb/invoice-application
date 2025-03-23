@@ -50,17 +50,6 @@ const onShow = async (id) => {
 
         <!-- Filter & Search Section -->
         <div class="flex flex-col md:flex-row justify-between items-center mt-6 space-y-4 md:space-y-0">
-            <!-- Filter -->
-            <div class="relative">
-                <button class="p-3 rounded-full bg-gray-100 hover:bg-gray-200 transition">
-                    <i class="fas fa-ellipsis-h"></i>
-                </button>
-                <ul class="absolute left-0 mt-2 w-36 bg-white border border-gray-100 rounded-lg shadow-md hidden">
-                    <li class="px-4 py-2 hover:bg-gray-100 cursor-pointer">All</li>
-                    <li class="px-4 py-2 hover:bg-gray-100 cursor-pointer">Paid</li>
-                </ul>
-            </div>
-
             <!-- Search & Select -->
             <div class="flex items-center space-x-4">
                 <select class="px-4 py-2 border rounded-lg text-gray-500 border-slate-200 outline-none">

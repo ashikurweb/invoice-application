@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Counter;
 use App\Models\Invoice;
 use App\Models\InvoiceItem;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class InvoiceController extends Controller
@@ -131,36 +133,62 @@ class InvoiceController extends Controller
         $invoiceItem->delete();
     }
 
-    public function update_invoice ( Request $request, $id )
+
+    public function update_invoice(Request $request, $id)
     {
-        $invoice = Invoice::where('id', $id)->first();
+        $invoice = Invoice::findOrFail($id);
 
-        $invoice->sub_total   = $request->subtotal;
-        $invoice->total       = $request->total;
-        $invoice->customer_id = $request->customer_id;
-        $invoice->number      = $request->number;
-        $invoice->date        = $request->date;
-        $invoice->due_date    = $request->due_date;
-        $invoice->discount    = $request->discount;
-        $invoice->reference   = $request->reference;
-        $invoice->terms_and_conditions = $request->terms_and_conditions;
+        $invoice->update([
+            'sub_total' => $request->subtotal,
+            'total' => $request->total,
+            'customer_id' => $request->customer_id,
+            'number' => $request->number,
+            'date' => $request->date,
+            'due_date' => $request->due_date,
+            'discount' => $request->discount,
+            'reference' => $request->reference,
+            'terms_and_conditions' => $request->terms_and_conditions,
+        ]);
 
+        $invoiceItems = json_decode($request->input('invoice_item'), true);
+        $existingItemIds = $invoice->invoice_items()->pluck('id')->toArray();
 
-        $invoice->save();
-        
-        $invoice_item = $request->input('invoice_item');
-        $invoice->invoice_items()->delete(); 
-        
+        $updatedItemIds = array_column($invoiceItems, 'id');
+        $removedItemIds = array_diff($existingItemIds, $updatedItemIds);
 
-        foreach(json_decode($invoice_item) as $item) {
-            InvoiceItem::create([
-                'product_id' => $item->id,
-                'invoice_id' => $invoice->id,
-                'quantity'   => $item->quantity,
-                'unit_price' => $item->unit_price
-            ]);
+        if (!empty($removedItemIds)) {
+            InvoiceItem::whereIn('id', $removedItemIds)->delete();
         }
 
+        foreach ($invoiceItems as $item) {
+            if (isset($item['id'])) {
+                InvoiceItem::where('id', $item['id'])->update([
+                    'product_id' => $item['product_id'],
+                    'quantity' => $item['quantity'],
+                    'unit_price' => $item['unit_price'],
+                ]);
+            } else {
+                $invoice->invoice_items()->create([
+                    'product_id' => $item['product_id'],
+                    'quantity' => $item['quantity'],
+                    'unit_price' => $item['unit_price'],
+                ]);
+            }
+        }
+
+        return response()->json([
+            'message' => 'Invoice updated successfully',
+        ], 200);
+    }
+
+    public function downloadPdf( $id )
+    {
+        $invoice = Invoice::with(['customer', 'invoice_items.product'])->findOrFail($id);
+        $invoice->created_at_formatted = Carbon::parse($invoice->created_at)
+            ->timezone('Asia/Dhaka')
+            ->format('Y-m-d h:i:s A');
+        $pdf     = Pdf::loadView('invoices.pdf', compact('invoice'));
+        return $pdf->download('invoice-' . $invoice->number . '.pdf');
     }
 
     public function destroy_invoice ( $id )
