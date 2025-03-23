@@ -9,7 +9,8 @@ Route::get('/', function () {
 });
 
 
-Route::get('/invoice/pdf/{id}', [InvoiceController::class, 'downloadPdf'])->name('invoice.pdf');
+Route::get('/invoice/pdf/{id}', [InvoiceController::class, 'downloadPdf']);
+Route::get('/invoices/{id}/download-receipt', [InvoiceController::class, 'downloadReceipt']);
 
 
 Route::get('/{pathMatch}', function () {

@@ -46,8 +46,22 @@ const formatDate = (dateString) => {
 }
 
 const downloadPDF = (id) => {
-    window.location.href = `/invoice/pdf/${id}`;
-}
+    const link = document.createElement('a');
+    link.href = `/invoice/pdf/${id}`;
+    link.download = `invoice-${id}.pdf`; 
+    document.body.appendChild(link); 
+    link.click(); 
+    document.body.removeChild(link);
+};
+
+const downloadReceipt = (id) => {
+    const link = document.createElement('a');
+    link.href = `/invoices/${id}/download-receipt`;
+    link.download = `receipt-${id}.pdf`; 
+    document.body.appendChild(link); 
+    link.click(); 
+    document.body.removeChild(link);
+};
 
 </script>
 
@@ -167,6 +181,16 @@ const downloadPDF = (id) => {
                         </button>
                     </li>
 
+                    <li>
+                        <button
+                            @click="downloadReceipt(form.id)"
+                            class="bg-slate-200 text-slate-600 hover:text-white cursor-pointer px-4 py-2 rounded-lg hover:bg-slate-600 transition-all duration-300 flex items-center space-x-2"
+                        >
+
+                            <i class="fas fa-download"></i>
+                            <span>Download Receipt</span>
+                        </button>
+                    </li>
 
                     <li>
                         <button
